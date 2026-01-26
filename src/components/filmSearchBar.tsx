@@ -1,8 +1,8 @@
 import { useState } from "react";
-import type { filterByVotesProps, searchFilmProps, SearchType } from "../types/types";
+import type { filterByVotesProps, searchFilmProps, SearchType, YearFilterProps } from "../types/types";
 import './searchBarStyle.css';
 
-export function FilmSearchBar({ onSearch, filterByVotes , onFilterChange}: searchFilmProps & filterByVotesProps & SearchType) {
+export function FilmSearchBar({ onSearch, filterByVotes , onFilterChange, onYearChange, selectedYear}: searchFilmProps & filterByVotesProps & SearchType & YearFilterProps) {
         const [inputValue, setInputValue] = useState<string>('');
         const [ascending, setAscending] = useState<boolean>(true);
         const filterButtons = [    
@@ -28,6 +28,7 @@ export function FilmSearchBar({ onSearch, filterByVotes , onFilterChange}: searc
                 />
                 <button className="btn btn-primary" onClick={() => onSearch(inputValue)}>Buscar</button>
             </div>            
+         
             <div className="filter-tabs">
                 {filterButtons.map(btn => (
                     <button 
@@ -40,7 +41,25 @@ export function FilmSearchBar({ onSearch, filterByVotes , onFilterChange}: searc
                     </button>
                 ))}
             </div>
+          
             <div className="filter-container">
+                     <div className="year-filter">
+                <select 
+                    value={selectedYear} 
+                    onChange={(e) => onYearChange(e.target.value)}
+                    className="year-select"
+                >
+                    <option value="">Todos los años</option>
+                    {Array.from({length: 2024 - 1950 + 1}, (_, i) => 1950 + i)
+                        .reverse()
+                        .map(year => (
+                            <option key={year} value={year.toString()}>
+                                {year}
+                            </option>
+                        ))
+                    }
+                </select>
+            </div>
                 <button className="btn btn-secondary" onClick={filter}>
                     Filtrar por Rating <span className="sort-indicator">{ascending ? '▲' : '▼'}</span>
                 </button>

@@ -10,9 +10,11 @@ import { ActiveFilters } from './components/activeFilters';
 function App() {
   const [filmName, setFilmName] = useState('');
   const [searchType, setSearchType] = useState('popular');
-  const { filmInfo, setFilmInfo, error } = useFilms(filmName, searchType);
+  const [selectedYear, setSelectedYear] = useState('');
+  const { filmInfo, setFilmInfo, error } = useFilms(filmName, searchType, selectedYear);
 
   const onsearch = (name: string) => {
+    setSelectedYear('');
     if (name) {
       setFilmName(name);
       setSearchType('search');
@@ -32,12 +34,16 @@ function App() {
     setFilmInfo(sortedFilms);
   }
 
+  const handleYearChange = (year: string) => {
+    setSelectedYear(year);
+  }
+
 
   return (
     <>
       <h1>Buscador de Peliculas</h1>
-      <FilmSearchBar onSearch={onsearch} filterByVotes={filterByVotes} onFilterChange={handleFilterChange} />       
-      <ActiveFilters filmName={filmName} searchType={searchType} filmInfo={filmInfo} />       
+      <FilmSearchBar onSearch={onsearch} filterByVotes={filterByVotes} onFilterChange={handleFilterChange} onYearChange={handleYearChange} selectedYear={selectedYear} />       
+      <ActiveFilters filmName={filmName} searchType={searchType} filmInfo={filmInfo} selectedYear={selectedYear}/>       
       <div className="films-container">
         {error 
         ? (<ErrorCard error={error} />)

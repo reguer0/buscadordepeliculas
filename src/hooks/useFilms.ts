@@ -5,7 +5,7 @@ const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 const BASE_URL = import.meta.env.VITE_TMDB_BASE_URL ;
 
 //TODO: crear como custom hook, y manejar errrores
-export function useFilms(filmName: string , type: string = 'popular') {
+export function useFilms(filmName: string , type: string = 'popular', year: string = '') {
     const [filmInfo, setfilmInfo] = useState<FilmType[]>([]);
     const [error, setError] = useState<string | null>(null); 
  
@@ -15,7 +15,19 @@ export function useFilms(filmName: string , type: string = 'popular') {
             try {
                 let url = `${BASE_URL}/movie/${type}?api_key=${API_KEY}`;
 
-                if (type === 'search' && query) {
+                if (year) {
+                    // Usar discover/movie cuando hay filtro por año
+                    url = `${BASE_URL}/discover/movie?api_key=${API_KEY}&primary_release_year=${year}`;
+                    
+                    // Añadir criterio de ordenamiento según el tipo
+                    if (type === 'top_rated') {
+                        url += '&sort_by=vote_average.desc';
+                    } else if (type === 'popular') {
+                        url += '&sort_by=popularity.desc';
+                    } else if (type === 'upcoming') {
+                        url += '&sort_by=primary_release_date.desc';
+                    }
+                } else if (type === 'search' && query) {
                     url = `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}`;
                 }
 
@@ -56,7 +68,7 @@ export function useFilms(filmName: string , type: string = 'popular') {
         }; 
         
         getApiData(filmName);
-    }, [filmName, type]);  
+    }, [filmName, type, year]);  
 
     return { filmInfo, setFilmInfo: setfilmInfo, error };
 }

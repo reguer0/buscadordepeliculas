@@ -1,6 +1,6 @@
 import type {activeFiltersProps}  from '../types/types';
 import './activeFilters.css';
-export function ActiveFilters({ filmName, searchType, filmInfo }: activeFiltersProps) {
+export function ActiveFilters({ filmName, searchType, filmInfo, selectedYear }: activeFiltersProps) {
 
         const filterButtons = [    
                 { type: 'search', value: filmName },
@@ -19,6 +19,11 @@ export function ActiveFilters({ filmName, searchType, filmInfo }: activeFiltersP
                     <span className="filter-label"> Filtrando : {activeFilter.value}</span> 
                 )}
             </div>            
+            <div>
+                {selectedYear && (
+                    <span className="filter-label">  Año: {selectedYear}</span> 
+                )}
+            </div>
           
             <div className="results-count">
                 <span className="count-label">Resultados: {filmInfo.length}</span>               

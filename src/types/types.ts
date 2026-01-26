@@ -11,7 +11,8 @@ export interface FilmType{
 export interface activeFiltersProps {
   filmName: string;
   searchType: string;
-  filmInfo: FilmType[];
+  filmInfo: FilmType[];  
+  selectedYear: string;
 }
 
 
@@ -25,4 +26,9 @@ export interface filterByVotesProps {
  
   export interface SearchType {
     onFilterChange:(type:string) => void; 
+  }
+
+  export interface YearFilterProps {
+    onYearChange: (year: string) => void;
+    selectedYear: string;
   }
