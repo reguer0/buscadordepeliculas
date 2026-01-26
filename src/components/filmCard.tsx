@@ -10,7 +10,7 @@ export function FilmCard(film: FilmType) {
     const filmTrailerInfo = useTrailer(filmId);
 
     useEffect(() => {
-        if (filmTrailerInfo?.trailerInfo?.results?.length > 0 && filmId) {
+        if ((filmTrailerInfo?.trailerInfo?.results?.length ?? 0) > 0 && filmId) {
             const trailer = filmTrailerInfo?.trailerInfo?.results.find(
                 (video: any) => video.type === 'Trailer' && video.site === 'YouTube'
             );
@@ -20,7 +20,7 @@ export function FilmCard(film: FilmType) {
                 setFilmId(null);
             }
         }
-    }, [filmTrailerInfo.trailerInfo]);
+    }, [filmTrailerInfo.trailerInfo,filmId]);
 
     const onFilmClick = (movieId: number) => {
         setFilmId(movieId);
