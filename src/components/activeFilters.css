@@ -1,0 +1,29 @@
+.active-filters {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+.filter-text {
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.results-count {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+    .active-filters {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+    }
+}
