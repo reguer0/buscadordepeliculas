@@ -1,0 +1,50 @@
+.providers-section {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.providers-section h3 {
+  font-size: 1rem;
+  color: var(--text-primary);
+  margin: 0 0 0.75rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+  font-weight: 600;
+}
+
+.providers-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.providers-section li {
+  display: inline-block;
+}
+
+.providers-section a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-primary);
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.providers-section a:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+  transform: translateY(-2px);
+}

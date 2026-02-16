@@ -1,5 +1,6 @@
 
 
+import './providers.css';
 
 const getProviderUrl = (provider: any, movieTitle: string) => {
     const encodedTitle = encodeURIComponent((movieTitle || '').toLowerCase());    
@@ -28,7 +29,7 @@ export function Providers({ watchProviders, movieTitle }: { watchProviders: any,
         return (
         <div>
            
-           <section >            
+           <section className="providers-section">            
             {watchProviders && Object.keys(watchProviders).map((provider) => {                   
                     const providerArray = watchProviders[provider];
                     if(Array.isArray(providerArray)) {
