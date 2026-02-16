@@ -1,21 +1,32 @@
 import { useState } from "react";
-import type { filterByVotesProps, searchFilmProps, SearchType, YearFilterProps } from "../types/types";
+import type { SearchBarProps } from "../types/types";
+import { FILTER_BUTTONS } from "../types/types";
 import './searchBarStyle.css';
 
-export function FilmSearchBar({ onSearch, filterByVotes , onFilterChange, onYearChange, selectedYear}: searchFilmProps & filterByVotesProps & SearchType & YearFilterProps) {
-        const [inputValue, setInputValue] = useState<string>('');
-        const [ascending, setAscending] = useState<boolean>(true);
-        const filterButtons = [    
-            { type: 'popular', label: '🔥 Populares', icon: '🔥' },
-            { type: 'top_rated', label: '⭐ Mejor valoradas', icon: '⭐' },
-            { type: 'upcoming', label: '🎬 Próximos estrenos', icon: '🎬' }
-        ];
-        const filter = () =>{
-            const newAscending = !ascending;
-            setAscending(newAscending);
-            filterByVotes(newAscending);
+export function FilmSearchBar({ 
+    onSearch, 
+    filterByVotes, 
+    onFilterChange, 
+    onYearChange, 
+    selectedYear
+}: SearchBarProps) {
+    const [inputValue, setInputValue] = useState('');
+    const [ascending, setAscending] = useState(true);
+
+    const years = Array.from({ length: 2024 - 1950 + 1 }, (_, i) => 1950 + i).reverse();
+
+    const handleSortToggle = () => {
+        const newAscending = !ascending;
+        setAscending(newAscending);
+        filterByVotes(newAscending);
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') {
+            onSearch(inputValue);
         }
-      
+    };
+
     return (
         <div className="search-bar-container">
             <div className="search-input-group">
@@ -23,17 +34,20 @@ export function FilmSearchBar({ onSearch, filterByVotes , onFilterChange, onYear
                     className="search-input"
                     type="text" 
                     placeholder="Buscar películas..." 
+                    value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)} 
-                    onKeyPress={(e) => e.key === 'Enter' && onSearch(inputValue)}
+                    onKeyDown={handleKeyDown}
                 />
-                <button className="btn btn-primary" onClick={() => onSearch(inputValue)}>Buscar</button>
+                <button className="btn btn-primary" onClick={() => onSearch(inputValue)}>
+                    Buscar
+                </button>
             </div>            
          
             <div className="filter-tabs">
-                {filterButtons.map(btn => (
+                {FILTER_BUTTONS.map((btn) => (
                     <button 
                         key={btn.type}
-                      className="btn btn-secondary"
+                        className="btn btn-secondary"
                         onClick={() => onFilterChange(btn.type)}
                     >
                         <span className="tab-icon">{btn.icon}</span>
@@ -43,25 +57,22 @@ export function FilmSearchBar({ onSearch, filterByVotes , onFilterChange, onYear
             </div>
           
             <div className="filter-container">
-                     <div className="year-filter">
-                <select 
-                    value={selectedYear} 
-                    onChange={(e) => onYearChange(e.target.value)}
-                    className="year-select"
-                >
-                    <option value="">Todos los años</option>
-                    {Array.from({length: 2024 - 1950 + 1}, (_, i) => 1950 + i)
-                        .reverse()
-                        .map(year => (
+                <div className="year-filter">
+                    <select 
+                        value={selectedYear} 
+                        onChange={(e) => onYearChange(e.target.value)}
+                        className="year-select"
+                    >
+                        <option value="">Todos los años</option>
+                        {years.map(year => (
                             <option key={year} value={year.toString()}>
                                 {year}
                             </option>
-                        ))
-                    }
-                </select>
-            </div>
-                <button className="btn btn-secondary" onClick={filter}>
-                    Filtrar por Rating <span className="sort-indicator">{ascending ? '▲' : '▼'}</span>
+                        ))}
+                    </select>
+                </div>
+                <button className="btn btn-secondary" onClick={handleSortToggle}>
+                    Ordenar por Rating <span className="sort-indicator">{ascending ? '▲' : '▼'}</span>
                 </button>
             </div>
         </div>

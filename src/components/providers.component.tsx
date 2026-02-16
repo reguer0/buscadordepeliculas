@@ -1,8 +1,8 @@
 
-
 import './providers.css';
+import type { Provider, WatchProviders } from '../types/types';
 
-const getProviderUrl = (provider: any, movieTitle: string) => {
+const getProviderUrl = (provider: Provider, movieTitle: string) => {
     const encodedTitle = encodeURIComponent((movieTitle || '').toLowerCase());    
     // URLs de búsqueda específicas para cada plataforma
     const providerName = provider.provider_name?.toLowerCase() || '';
@@ -24,39 +24,56 @@ const getProviderUrl = (provider: any, movieTitle: string) => {
     return match ? providerUrls[match] : null;
 };
 
-export function Providers({ watchProviders, movieTitle }: { watchProviders: any, movieTitle: string }) {
-  
-        return (
+export function Providers({ watchProviders, movieTitle }: { watchProviders: WatchProviders; movieTitle: string | undefined }) {
+    const getProviderList = (): Array<{ type: string; provider: Provider }> => {
+        const countryData = watchProviders['ES'] || watchProviders['US'];
+        if (!countryData) return [];
+        
+        const providers: Array<{ type: string; provider: Provider }> = [];
+        const addedIds = new Set<number>();
+        
+        const addProviders = (list: Provider[] | undefined, type: string) => {
+            if (!list) return;
+            list.forEach(p => {
+                if (!addedIds.has(p.provider_id)) {
+                    addedIds.add(p.provider_id);
+                    providers.push({ type, provider: p });
+                }
+            });
+        };
+        
+        addProviders(countryData.flatrate, 'Streaming');
+        addProviders(countryData.rent, 'Alquiler');
+        addProviders(countryData.buy, 'Compra');
+        
+        return providers;
+    };
+
+    const providerList = getProviderList();
+
+    return (
         <div>
-           
-           <section className="providers-section">            
-            {watchProviders && Object.keys(watchProviders).map((provider) => {                   
-                    const providerArray = watchProviders[provider];
-                    if(Array.isArray(providerArray)) {
-                        return (
-                            <div key={provider}>
-                                <h3>{provider.toUpperCase()}</h3>
-                                <ul>
-                                    {providerArray.length>0 && providerArray.map((p: any) => {
-                                        const url = getProviderUrl(p, movieTitle);
-                                        return url ? 
-                                        <li>
-                                            <a key={p.provider_id} href={url} target="_blank" rel="noopener noreferrer">Ver en {p.provider_name}</a>
-                                        </li>
-                                            : null;
-                                    })}
-                                </ul>
-                            </div>
-                        )
-                    }
-                    return null;
-                })
-            }           
-           
-   
-           </section>
-          
-            
+            <section className="providers-section">            
+                {providerList.length > 0 ? (
+                    <div>
+                        <h3>Dónde ver</h3>
+                        <ul>
+                            {providerList.map((item, index) => {
+                                const url = getProviderUrl(item.provider, movieTitle || '');
+                                return url ? (
+                                    <li key={`${item.provider.provider_id}-${index}`}>
+                                        <a href={url} target="_blank" rel="noopener noreferrer">
+                                            {item.type}: {item.provider.provider_name}
+                                        </a>
+                                    </li>
+                                ) : null;
+                            })}
+                        </ul>
+                    </div>
+                ) : (
+                    <p>No hay información de proveedores disponible</p>
+                )}
+            </section>
         </div>
     );
 }

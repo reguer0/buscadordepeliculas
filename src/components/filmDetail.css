@@ -1,0 +1,80 @@
+.film-detail {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 1.5rem;
+}
+
+.film-detail-loading,
+.film-detail-error {
+    text-align: center;
+    padding: 2rem;
+}
+
+.film-detail-header {
+    display: flex;
+    gap: 2rem;
+    margin: 1.5rem 0;
+}
+
+.film-detail-poster {
+    width: 200px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px var(--shadow);
+}
+
+.film-detail-info {
+    flex: 1;
+}
+
+.film-detail-info h1 {
+    margin: 0 0 0.5rem 0;
+    color: var(--text-primary);
+    font-size: 1.8rem;
+}
+
+.film-tagline {
+    font-style: italic;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+}
+
+.film-meta {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.film-meta .rating {
+    color: #fbbf24;
+    font-weight: bold;
+}
+
+.film-genres {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.genre-tag {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 0.25rem 0.75rem;
+    border-radius: 16px;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.film-overview {
+    line-height: 1.6;
+    color: var(--text-primary);
+}
+
+@media (max-width: 600px) {
+    .film-detail-header {
+        flex-direction: column;
+        align-items: center;
+    }
+}

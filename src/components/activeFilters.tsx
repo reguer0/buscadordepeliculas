@@ -1,27 +1,32 @@
-import type {activeFiltersProps}  from '../types/types';
+import { useMemo } from 'react';
+import type { ActiveFiltersProps, SearchType } from '../types/types';
 import './activeFilters.css';
-export function ActiveFilters({ filmName, searchType, filmInfo, selectedYear }: activeFiltersProps) {
 
-        const filterButtons = [    
-                { type: 'search', value: filmName },
-                { type: 'popular', value: ' 🔥🔥Populares'},
-                { type: 'top_rated', value: ' ⭐⭐Mejor valoradas'},
-                { type: 'upcoming', value: ' 🎬🎬Próximos estrenos' }
-            ];
-        const activeFilter =  filterButtons.find(btn => btn.type === searchType);
-        
+const FILTER_LABELS: Record<SearchType, string> = {
+    popular: '🔥🔥Populares',
+    top_rated: '⭐⭐Mejor valoradas',
+    upcoming: '🎬🎬Próximos estrenos',
+    search: ''
+};
 
+export function ActiveFilters({ filmName, searchType, filmInfo, selectedYear }: ActiveFiltersProps) {
+    const activeFilterLabel = useMemo(() => {
+        if (searchType === 'search' && filmName) {
+            return `🔍 ${filmName}`;
+        }
+        return FILTER_LABELS[searchType] || '';
+    }, [searchType, filmName]);
 
     return (
         <div className="active-filters">
             <div>
-                {activeFilter && (
-                    <span className="filter-label"> Filtrando : {activeFilter.value}</span> 
+                {activeFilterLabel && (
+                    <span className="filter-label">Filtrando: {activeFilterLabel}</span> 
                 )}
             </div>            
             <div>
                 {selectedYear && (
-                    <span className="filter-label">  Año: {selectedYear}</span> 
+                    <span className="filter-label">Año: {selectedYear}</span> 
                 )}
             </div>
           

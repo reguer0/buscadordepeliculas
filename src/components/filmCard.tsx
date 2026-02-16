@@ -1,52 +1,65 @@
-import type { FilmType } from '../types/types';
-import './filmCardStyle.css';
-import { useState, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
+import type { FilmType } from '../types/types';
 import { useTrailer } from '../hooks/useTrailer';
+import './filmCardStyle.css';
 
+interface FilmCardProps extends FilmType {}
 
-export function FilmCard(film: FilmType) {
-    const [filmId, setFilmId] = useState<number | null>(null);
+export function FilmCard(film: FilmCardProps) {
+    const [showTrailer, setShowTrailer] = useState(false);
+    const { trailerInfo, isLoading } = useTrailer(showTrailer ? film.id : null);
 
-    const filmTrailerInfo = useTrailer(filmId);
+    const handleTrailerClick = useCallback(() => {
+        setShowTrailer(true);
+    }, []);
 
-    useEffect(() => {
-        if ((filmTrailerInfo?.trailerInfo?.results?.length ?? 0) > 0 && filmId) {
-            const trailer = filmTrailerInfo?.trailerInfo?.results.find(
-                (video: any) => video.type === 'Trailer' && video.site === 'YouTube'
-            );
-            if (trailer?.key) {
-                const youtubeUrl = `https://www.youtube.com/watch?v=${trailer.key}`;
-                window.open(youtubeUrl, "_blank");
-                setFilmId(null);
-            }
+    const openTrailer = useCallback(() => {
+        const trailer = trailerInfo?.results.find(
+            (video) => video.type === 'Trailer' && video.site === 'YouTube'
+        );
+        if (trailer?.key) {
+            window.open(`https://www.youtube.com/watch?v=${trailer.key}`, '_blank');
         }
-    }, [filmTrailerInfo.trailerInfo,filmId]);
+    }, [trailerInfo]);
 
-    const onFilmClick = (movieId: number) => {
-        setFilmId(movieId);
+    if (showTrailer && !isLoading && trailerInfo?.results) {
+        const hasTrailer = trailerInfo.results.some(
+            (video) => video.type === 'Trailer' && video.site === 'YouTube'
+        );
+        if (hasTrailer) {
+            openTrailer();
+        }
+        setShowTrailer(false);
     }
 
+    const year = film.release_date ? film.release_date.split('-')[0] : 'N/A';
+
     return (
-        <div className="film-card" >
+        <div className="film-card">
             <h2>{film.title}</h2>
-            <p>Release Date: {film.release_date}</p>
+            <p>Año: {year}</p>
             
             {film.poster_path && (
                 <img 
                     src={`https://image.tmdb.org/t/p/w200${film.poster_path}`} 
-                    alt={`Poster of ${film.title}`} 
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        onFilmClick(film.id);
-                    }}
-                    style={{ cursor: 'pointer' }}
+                    alt={`Póster de ${film.title}`}
                 />
             )}  
-             <p className="rating">{film.vote_average} ({film.vote_count} votes)</p>         
+
+            <div className="film-card-actions">
+                <button 
+                    className="btn btn-trailer" 
+                    onClick={handleTrailerClick}
+                    disabled={isLoading}
+                >
+                    🎬 Ver Trailer
+                </button>
+            </div>
+
+            <p className="rating">{film.vote_average.toFixed(1)} ({film.vote_count} votos)</p>         
             <p className="overview">{film.overview}</p>
-            <Link to={`/film/${film.id}`} className="btn btn-secondary"> Ver más</Link>
-           
+            <Link to={`/film/${film.id}`} className="btn btn-secondary">Ver más</Link>
         </div>
     );
 }

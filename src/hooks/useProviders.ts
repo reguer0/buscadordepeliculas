@@ -1,47 +1,38 @@
 import { useEffect, useState } from 'react';
+import type { ProviderData, UseProvidersReturn } from '../types/types';
 
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 const BASE_URL = import.meta.env.VITE_TMDB_BASE_URL;
 
-interface ProviderData {
-    results: {
-        [country: string]: {
-            link?: string;
-            flatrate?: Array<{ provider_id: number; provider_name: string; logo_path: string }>;
-            rent?: Array<{ provider_id: number; provider_name: string; logo_path: string }>;
-            buy?: Array<{ provider_id: number; provider_name: string; logo_path: string }>;
-        };
-    };
-}
-
-interface ProviderDirectLink {
-    results: {
-        [providerId: string]: string;
-    };
-}
-
-export function useProviders(filmId: number | null) {
+export function useProviders(filmId: number | null): UseProvidersReturn {
     const [providerInfo, setProviderInfo] = useState<ProviderData | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         if (!filmId) return;
 
-        const getApiData = async (id: number) => {
+        const fetchProviders = async () => {
+            setIsLoading(true);
+            setError(null);
+
             try {
-                setError(null);
-                const url = `${BASE_URL}/movie/${id}/watch/providers?api_key=${API_KEY}`;
+                const url = `${BASE_URL}/movie/${filmId}/watch/providers?api_key=${API_KEY}`;
                 const response = await fetch(url);
+                
                 if (!response.ok) throw new Error('Failed to fetch providers');
+                
                 const result = await response.json();
                 setProviderInfo(result);
             } catch (err) {
                 setError(err instanceof Error ? err.message : 'Unknown error');
+            } finally {
+                setIsLoading(false);
             }
         };
 
-        getApiData(filmId);
+        fetchProviders();
     }, [filmId]);
 
-    return { providerInfo, error };
+    return { providerInfo, isLoading, error };
 }

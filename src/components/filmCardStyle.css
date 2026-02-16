@@ -59,3 +59,31 @@
   content: '⭐';
   font-size: 1.1rem;
 }
+
+.film-card-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+}
+
+.btn-trailer {
+  flex: 1;
+  padding: 0.5rem 1rem;
+  background: #e53935;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: background 0.2s ease;
+}
+
+.btn-trailer:hover:not(:disabled) {
+  background: #c62828;
+}
+
+.btn-trailer:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

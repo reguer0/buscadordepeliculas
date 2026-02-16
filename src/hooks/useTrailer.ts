@@ -1,46 +1,38 @@
-
-import { useEffect ,useState} from 'react';
-
+import { useEffect, useState } from 'react';
+import type { TrailerData, UseTrailerReturn } from '../types/types';
 
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
-const BASE_URL = import.meta.env.VITE_TMDB_BASE_URL ;
+const BASE_URL = import.meta.env.VITE_TMDB_BASE_URL;
 
-//TODO: crear como custom hook, y manejar errrores
-interface TrailerData {
- results: Array<{
-    id: string;
-    key: string;
-    name: string;
-    site: string;
-    type: string;
- }>;
-}
+export function useTrailer(filmId: number | null): UseTrailerReturn {
+    const [trailerInfo, setTrailerInfo] = useState<TrailerData | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-export function useTrailer(filmId: number | null) {
- const [trailerInfo, setTrailerInfo] = useState<TrailerData | null>(null);
- 
- const [error, setError] = useState<string | null>(null);
-
-    useEffect(() => {   
+    useEffect(() => {
         if (!filmId) return;
 
-        const getApiData = async (id: number) => {          
-            try {               
-                setError(null);
-                const url =  `${BASE_URL}/movie/${id}/videos?api_key=${API_KEY}`;
-                const response = await fetch(url);                 
+        const fetchTrailer = async () => {
+            setIsLoading(true);
+            setError(null);
+
+            try {
+                const url = `${BASE_URL}/movie/${filmId}/videos?api_key=${API_KEY}`;
+                const response = await fetch(url);
+                
                 if (!response.ok) throw new Error('Failed to fetch trailer');
-                const result = await response.json();              
-                setTrailerInfo(result);  
+                
+                const result = await response.json();
+                setTrailerInfo(result);
             } catch (err) {
                 setError(err instanceof Error ? err.message : 'Unknown error');
-            } 
-               
-            
-        }; 
-        
-        getApiData(filmId);
-    }, [filmId]);  
+            } finally {
+                setIsLoading(false);
+            }
+        };
 
-    return { trailerInfo, error };
+        fetchTrailer();
+    }, [filmId]);
+
+    return { trailerInfo, isLoading, error };
 }
