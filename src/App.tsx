@@ -1,11 +1,13 @@
 
 import { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import './App.css'
 import { FilmSearchBar } from './components/filmSearchBar';
 import { FilmCard } from './components/filmCard';
 import { useFilms } from './hooks/useFilms';
 import { ErrorCard } from './components/errorCard';
 import { ActiveFilters } from './components/activeFilters';
+import { FilmDetail } from './components/filmDetail';
 
 function App() {
   const [filmName, setFilmName] = useState('');
@@ -38,21 +40,27 @@ function App() {
     setSelectedYear(year);
   }
 
-
   return (
-    <>
-      <h1>Buscador de Peliculas</h1>
-      <FilmSearchBar onSearch={onsearch} filterByVotes={filterByVotes} onFilterChange={handleFilterChange} onYearChange={handleYearChange} selectedYear={selectedYear} />       
-      <ActiveFilters filmName={filmName} searchType={searchType} filmInfo={filmInfo} selectedYear={selectedYear}/>       
-      <div className="films-container">
-        {error 
-        ? (<ErrorCard error={error} />)
-       :  (filmInfo.map((film) => (
-            <FilmCard key={film.id} {...film} />
-          )))
-        }
-      </div>
-    </>
+    <Router>
+      <Routes>
+        <Route path="/" element={
+          <>
+            <h1>Buscador de Peliculas</h1>
+            <FilmSearchBar onSearch={onsearch} filterByVotes={filterByVotes} onFilterChange={handleFilterChange} onYearChange={handleYearChange} selectedYear={selectedYear} />       
+            <ActiveFilters filmName={filmName} searchType={searchType} filmInfo={filmInfo} selectedYear={selectedYear}/>       
+            <div className="films-container">
+              {error 
+              ? (<ErrorCard error={error} />)
+             :  (filmInfo.map((film) => (
+                  <FilmCard key={film.id} {...film} />
+                )))
+              }
+            </div>
+          </>
+        } />
+        <Route path="/film/:id" element={<FilmDetail />} />
+      </Routes>
+    </Router>
   )
 }
 

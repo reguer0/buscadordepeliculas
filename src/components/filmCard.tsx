@@ -1,6 +1,7 @@
 import type { FilmType } from '../types/types';
 import './filmCardStyle.css';
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useTrailer } from '../hooks/useTrailer';
 
 
@@ -44,6 +45,7 @@ export function FilmCard(film: FilmType) {
             )}  
              <p className="rating">{film.vote_average} ({film.vote_count} votes)</p>         
             <p className="overview">{film.overview}</p>
+            <Link to={`/film/${film.id}`} className="btn btn-secondary"> Ver más</Link>
            
         </div>
     );
