@@ -3,6 +3,7 @@ export type SearchType = 'popular' | 'top_rated' | 'upcoming' | 'search';
 export interface FilmType {
     id: number;
     title: string;
+    name: string;
     poster_path: string;
     release_date: string;
     overview: string;
@@ -90,14 +91,17 @@ export interface ProductionCompany {
 
 export interface MovieDetails {
     id: number;
-    title: string;
+    title?: string;
+    name?: string;
     overview: string;
     poster_path: string | null;
     backdrop_path: string | null;
-    release_date: string;
+    release_date?: string;
+    first_air_date?: string;
     vote_average: number;
     vote_count: number;
     runtime: number | null;
+    episode_run_time?: number[];
     genres: Genre[];
     status: string;
     tagline: string | null;

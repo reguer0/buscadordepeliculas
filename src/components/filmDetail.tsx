@@ -6,11 +6,14 @@ import { Cast } from "./cast";
 import './filmDetail.css';
 
 export function FilmDetail() {
-    const { id } = useParams<{ id: string }>();
+    const { id, movieorTv } = useParams<{ id: string; movieorTv: string }>();
     const filmId = id ? parseInt(id) : null;
+   
     
-    const { providerInfo, isLoading: providersLoading } = useProviders(filmId);
-    const { data: movie, isLoading: movieLoading, error } = useDetails(filmId);
+    const { providerInfo, isLoading: providersLoading } = useProviders(filmId, movieorTv);
+    const { data: movie, isLoading: movieLoading, error } = useDetails(filmId, movieorTv);
+
+    const title = movie?.title || movie?.name || '';
 
     if (movieLoading || providersLoading) {
         return <div className="film-detail-loading">Cargando...</div>;
@@ -25,8 +28,8 @@ export function FilmDetail() {
         );
     }
 
-    const year = movie.release_date ? movie.release_date.split('-')[0] : 'N/A';
-    const runtime = movie.runtime ? `${Math.floor(movie.runtime / 60)}h ${movie.runtime % 60}min` : 'N/A';
+    const year = (movie.release_date || movie.first_air_date)?.split('-')[0] || 'N/A';
+    const runtime = movie.runtime ? `${Math.floor(movie.runtime / 60)}h ${movie.runtime % 60}min` : (movie.episode_run_time?.[0] ? `${movie.episode_run_time[0]}min` : 'N/A');
 
     return (
         <div className="film-detail">
@@ -41,7 +44,7 @@ export function FilmDetail() {
                     />
                 )}
                 <div className="film-detail-info">
-                    <h1>{movie.title}</h1>
+                    <h1>{title}</h1>
                     {movie.tagline && <p className="film-tagline">{movie.tagline}</p>}
                     <div className="film-meta">
                         <span>{year}</span>
@@ -57,7 +60,7 @@ export function FilmDetail() {
                 </div>
             </div>
 
-            <Providers watchProviders={providerInfo?.results || {}} movieTitle={movie.title} />            
+            <Providers watchProviders={providerInfo?.results || {}} movieTitle={title} />            
             <Cast cast={movie.credits.cast} />
         </div>
     );

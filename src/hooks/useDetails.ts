@@ -4,7 +4,7 @@ import type { MovieDetails, UseDetailsReturn } from '../types/types';
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 const BASE_URL = import.meta.env.VITE_TMDB_BASE_URL;
 
-export function useDetails(filmId: number | null): UseDetailsReturn {
+export function useDetails(filmId: number | null, movieorTv?: string): UseDetailsReturn {
     const [data, setData] = useState<MovieDetails | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -17,8 +17,9 @@ export function useDetails(filmId: number | null): UseDetailsReturn {
             setError(null);
 
             try {
+                const type = movieorTv || 'movie';
                 const response = await fetch(
-                    `${BASE_URL}/movie/${filmId}?api_key=${API_KEY}&language=es-ES&append_to_response=credits`
+                    `${BASE_URL}/${type}/${filmId}?api_key=${API_KEY}&language=es-ES&append_to_response=credits`
                 );
                 
                 if (!response.ok) throw new Error('Failed to fetch movie details');
@@ -34,7 +35,7 @@ export function useDetails(filmId: number | null): UseDetailsReturn {
         };
 
         fetchMovieDetails();
-    }, [filmId]);
+    }, [filmId, movieorTv]);
 
     return { data, isLoading, error };
 }

@@ -14,8 +14,8 @@ function App() {
   const [searchType, setSearchType] = useState<SearchType>('popular');
   const [selectedYear, setSelectedYear] = useState('');
   const [sortAscending, setSortAscending] = useState(true);
-
-  const { films, isLoading, error } = useFilms(filmName, searchType, selectedYear);
+  const [movieorTv, setMovieorTv] = useState('movie');
+  const { films, isLoading, error } = useFilms(filmName, searchType, selectedYear, movieorTv);
 
   const sortedFilms = useMemo(() => {
     return [...films].sort((a, b) => 
@@ -54,7 +54,20 @@ function App() {
       <Routes>
         <Route path="/" element={
           <>
-            <h1>Buscador de Peliculas</h1>
+            <div className="movie-tv-selector">
+              <button 
+                className={`selector-btn ${movieorTv === 'movie' ? 'active' : ''}`}
+                onClick={() => setMovieorTv('movie')}
+              >
+                Películas
+              </button>
+              <button 
+                className={`selector-btn ${movieorTv === 'tv' ? 'active' : ''}`}
+                onClick={() => setMovieorTv('tv')}
+              >
+                Series
+              </button>
+            </div>
             <FilmSearchBar 
               onSearch={handleSearch} 
               filterByVotes={handleSortByVotes} 
@@ -75,13 +88,13 @@ function App() {
                 <ErrorCard error={error} />
               ) : (
                 sortedFilms.map((film: FilmType) => (
-                  <FilmCard key={film.id} {...film} />
+                  <FilmCard key={film.id} {...film} movieorTv={movieorTv} />
                 ))
               )}
             </div>
           </>
         } />
-        <Route path="/film/:id" element={<FilmDetail />} />
+        <Route path="/film/:id/:movieorTv" element={<FilmDetail />} />
       </Routes>
     </Router>
   );

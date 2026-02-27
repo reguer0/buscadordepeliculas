@@ -9,7 +9,7 @@ const getProviderUrl = (provider: Provider, movieTitle: string) => {
     const providerUrls: { [key: string]: string } = {
         'amazon prime video': `https://www.primevideo.com/search/?phrase=${encodedTitle}`,
         'netflix': `https://www.netflix.com/search?q=${encodedTitle}`,
-        'disney plus': `https://www.disneyplus.com/search?q=${encodedTitle}`,
+        'disney plus': `https://www.disneyplus.com/search?${encodedTitle}`,
         'hulu': `https://www.hulu.com/search?q=${encodedTitle}`,
         'apple tv': `https://tv.apple.com/search?term=${encodedTitle}`,
         'google play movies': `https://play.google.com/store/search?q=${encodedTitle}&c=movies`,

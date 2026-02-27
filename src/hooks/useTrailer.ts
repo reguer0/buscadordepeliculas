@@ -4,7 +4,7 @@ import type { TrailerData, UseTrailerReturn } from '../types/types';
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 const BASE_URL = import.meta.env.VITE_TMDB_BASE_URL;
 
-export function useTrailer(filmId: number | null): UseTrailerReturn {
+export function useTrailer(filmId: number | null, movieorTv: string): UseTrailerReturn {
     const [trailerInfo, setTrailerInfo] = useState<TrailerData | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -17,7 +17,7 @@ export function useTrailer(filmId: number | null): UseTrailerReturn {
             setError(null);
 
             try {
-                const url = `${BASE_URL}/movie/${filmId}/videos?api_key=${API_KEY}`;
+                const url = `${BASE_URL}/${movieorTv}/${filmId}/videos?api_key=${API_KEY}`;
                 const response = await fetch(url);
                 
                 if (!response.ok) throw new Error('Failed to fetch trailer');
@@ -32,7 +32,7 @@ export function useTrailer(filmId: number | null): UseTrailerReturn {
         };
 
         fetchTrailer();
-    }, [filmId]);
+    }, [filmId, movieorTv]);
 
     return { trailerInfo, isLoading, error };
 }

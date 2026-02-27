@@ -97,3 +97,33 @@ h1 {
 .read-the-docs {
   color: #888;
 }
+
+.movie-tv-selector {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid var(--border);
+}
+
+.selector-btn {
+  padding: 1rem 2.5rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  background: transparent;
+  color: var(--text-secondary);
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: -2px;
+}
+
+.selector-btn:hover {
+  color: var(--text-primary);
+}
+
+.selector-btn.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
