@@ -1,19 +1,23 @@
+import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useProviders } from "../hooks/useProviders";
 import { useDetails } from "../hooks/useDetails";
 import { Providers } from "./providers.component";
 import { Cast } from "./cast";
+import { MoviePlayer } from "./moviePlayer";
 import './filmDetail.css';
 
 export function FilmDetail() {
     const { id, movieorTv } = useParams<{ id: string; movieorTv: string }>();
     const filmId = id ? parseInt(id) : null;
+    const [showPlayer, setShowPlayer] = useState(false);
    
     
     const { providerInfo, isLoading: providersLoading } = useProviders(filmId, movieorTv);
     const { data: movie, isLoading: movieLoading, error } = useDetails(filmId, movieorTv);
 
     const title = movie?.title || movie?.name || '';
+    const type = movieorTv === 'tv' ? 'tv' : 'movie';
 
     if (movieLoading || providersLoading) {
         return <div className="film-detail-loading">Cargando...</div>;
@@ -33,6 +37,15 @@ export function FilmDetail() {
 
     return (
         <div className="film-detail">
+            {showPlayer && filmId && (
+                <MoviePlayer 
+                    tmdbId={filmId} 
+                    title={title} 
+                    type={type}
+                    onClose={() => setShowPlayer(false)} 
+                />
+            )}
+            
             <Link to="/" className="btn btn-secondary">← Volver</Link>
             
             <div className="film-detail-header">
@@ -57,10 +70,13 @@ export function FilmDetail() {
                         ))}
                     </div>
                     <p className="film-overview">{movie.overview}</p>
+                    <button className="btn btn-primary" onClick={() => setShowPlayer(true)}>
+                        ▶ Ver ahora
+                    </button>
                 </div>
             </div>
 
-            <Providers watchProviders={providerInfo?.results || {}} movieTitle={title} />            
+            <Providers watchProviders={providerInfo?.results || {}} movieTitle={title} movieYear={year} />            
             <Cast cast={movie.credits.cast} />
         </div>
     );

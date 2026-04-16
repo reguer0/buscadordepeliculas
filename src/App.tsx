@@ -1,3 +1,4 @@
+
 import { useState, useMemo } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
@@ -7,6 +8,7 @@ import { useFilms } from './hooks/useFilms';
 import { ErrorCard } from './components/errorCard';
 import { ActiveFilters } from './components/activeFilters';
 import { FilmDetail } from './components/filmDetail';
+import { Pagination } from './components/pagination';
 import type { FilmType, SearchType } from './types/types';
 
 function App() {
@@ -15,7 +17,8 @@ function App() {
   const [selectedYear, setSelectedYear] = useState('');
   const [sortAscending, setSortAscending] = useState(true);
   const [movieorTv, setMovieorTv] = useState('movie');
-  const { films, isLoading, error } = useFilms(filmName, searchType, selectedYear, movieorTv);
+  const [currentPage, setCurrentPage] = useState(1);
+  const { films, isLoading, error, totalPages, totalResults } = useFilms(filmName, searchType, selectedYear, movieorTv, currentPage);
 
   const sortedFilms = useMemo(() => {
     return [...films].sort((a, b) => 
@@ -27,6 +30,7 @@ function App() {
 
   const handleSearch = (name: string) => {
     setSelectedYear('');
+    setCurrentPage(1);
     if (name) {
       setFilmName(name);
       setSearchType('search');
@@ -39,6 +43,7 @@ function App() {
   const handleFilterChange = (newType: SearchType) => {
     setSearchType(newType);
     setFilmName('');
+    setCurrentPage(1);
   };
 
   const handleSortByVotes = (ascending: boolean) => {
@@ -47,6 +52,12 @@ function App() {
 
   const handleYearChange = (year: string) => {
     setSelectedYear(year);
+    setCurrentPage(1);
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
@@ -57,13 +68,13 @@ function App() {
             <div className="movie-tv-selector">
               <button 
                 className={`selector-btn ${movieorTv === 'movie' ? 'active' : ''}`}
-                onClick={() => setMovieorTv('movie')}
+                onClick={() => { setMovieorTv('movie'); setCurrentPage(1); }}
               >
                 Películas
               </button>
               <button 
                 className={`selector-btn ${movieorTv === 'tv' ? 'active' : ''}`}
-                onClick={() => setMovieorTv('tv')}
+                onClick={() => { setMovieorTv('tv'); setCurrentPage(1); }}
               >
                 Series
               </button>
@@ -92,6 +103,12 @@ function App() {
                 ))
               )}
             </div>
+            <Pagination 
+              currentPage={currentPage}
+              totalPages={totalPages}
+              totalResults={totalResults}
+              onPageChange={handlePageChange}
+            />
           </>
         } />
         <Route path="/film/:id/:movieorTv" element={<FilmDetail />} />

@@ -70,6 +70,23 @@
 .film-overview {
     line-height: 1.6;
     color: var(--text-primary);
+    margin-bottom: 1rem;
+}
+
+.film-detail-info .btn-primary {
+    background: var(--accent);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.film-detail-info .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--shadow);
 }
 
 @media (max-width: 600px) {

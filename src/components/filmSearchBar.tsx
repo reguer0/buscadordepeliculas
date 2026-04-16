@@ -12,8 +12,8 @@ export function FilmSearchBar({
 }: SearchBarProps) {
     const [inputValue, setInputValue] = useState('');
     const [ascending, setAscending] = useState(true);
-
-    const years = Array.from({ length: 2024 - 1950 + 1 }, (_, i) => 1950 + i).reverse();
+    const currentYear = new Date().getFullYear();
+    const years = Array.from({ length: currentYear - 1950 + 1 }, (_, i) => 1950 + i).reverse();
 
     const handleSortToggle = () => {
         const newAscending = !ascending;

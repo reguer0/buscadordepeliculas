@@ -2,29 +2,38 @@
 import './providers.css';
 import type { Provider, WatchProviders } from '../types/types';
 
-const getProviderUrl = (provider: Provider, movieTitle: string) => {
-    const encodedTitle = encodeURIComponent((movieTitle || '').toLowerCase());    
-    // URLs de búsqueda específicas para cada plataforma
-    const providerName = provider.provider_name?.toLowerCase() || '';
+const getDirectUrl = (provider: Provider, movieTitle: string) => {
+    const encodedTitle = encodeURIComponent(movieTitle || '');
+    const providerName = (provider.provider_name || '').toLowerCase();
+
     const providerUrls: { [key: string]: string } = {
-        'amazon prime video': `https://www.primevideo.com/search/?phrase=${encodedTitle}`,
         'netflix': `https://www.netflix.com/search?q=${encodedTitle}`,
-        'disney plus': `https://www.disneyplus.com/search?${encodedTitle}`,
+        'amazon prime video': `https://www.primevideo.com/search/?phrase=${encodedTitle}&phrase=${encodedTitle}`,
+        'disney plus': `https://www.disneyplus.com/search?q=${encodedTitle}`,
+        'hbo max': `https://www.max.com/search?q=${encodedTitle}`,
+        'max': `https://www.max.com/search?q=${encodedTitle}`,
         'hulu': `https://www.hulu.com/search?q=${encodedTitle}`,
         'apple tv': `https://tv.apple.com/search?term=${encodedTitle}`,
         'google play movies': `https://play.google.com/store/search?q=${encodedTitle}&c=movies`,
-        'max': `https://www.max.com/search?q=${encodedTitle}`,
         'paramount plus': `https://www.paramountplus.com/search?q=${encodedTitle}`,
         'peacock': `https://www.peacocktv.com/search?q=${encodedTitle}`,
-        'amazon video': `https://www.amazon.com/gp/video/search/${encodedTitle}`,
-        'rakuten': `https://www.rakuten.tv/es/search?q=${encodedTitle}`,
+        'amazon video': `https://www.amazon.com/s?k=${encodedTitle}+movie`,
+        'rakuten tv': `https://www.rakuten.tv/search?q=${encodedTitle}`,
+        'filmin': `https://www.filmin.es/buscar?q=${encodedTitle}`,
+        'movistar': `https://www.movistarplus.es/buscar?q=${encodedTitle}`,
+        'clarovideo': `https://www.clarovideo.com/buscar?q=${encodedTitle}`,
+        'sky': `https://www.sky.com/watch/search?q=${encodedTitle}`,
+        ' Crunchyroll': `https://www.crunchyroll.com/search?q=${encodedTitle}`,
+        'tubi': `https://tubitv.com/search?q=${encodedTitle}`,
+        'pluto tv': `https://pluto.tv/search?q=${encodedTitle}`,
+        'mubi': `https://mubi.com/search?q=${encodedTitle}`,
     };
-    
-    const match = Object.keys(providerUrls).find(key => providerName.includes(key));
-    return match ? providerUrls[match] : null;
+
+    const match = Object.entries(providerUrls).find(([key]) => providerName.includes(key));
+    return match ? match[1] : `https://www.google.com/search?q=${encodedTitle}+ver+online`;
 };
 
-export function Providers({ watchProviders, movieTitle }: { watchProviders: WatchProviders; movieTitle: string | undefined }) {
+export function Providers({ watchProviders, movieTitle, movieYear }: { watchProviders: WatchProviders; movieTitle: string | undefined; movieYear?: string }) {
     const getProviderList = (): Array<{ type: string; provider: Provider }> => {
         const countryData = watchProviders['ES'] || watchProviders['US'];
         if (!countryData) return [];
@@ -59,14 +68,14 @@ export function Providers({ watchProviders, movieTitle }: { watchProviders: Watc
                         <h3>Dónde ver</h3>
                         <ul>
                             {providerList.map((item, index) => {
-                                const url = getProviderUrl(item.provider, movieTitle || '');
-                                return url ? (
+                                const directUrl = getDirectUrl(item.provider, movieTitle || '');
+                                return (
                                     <li key={`${item.provider.provider_id}-${index}`}>
-                                        <a href={url} target="_blank" rel="noopener noreferrer">
+                                        <a href={directUrl} target="_blank" rel="noopener noreferrer">
                                             {item.type}: {item.provider.provider_name}
                                         </a>
                                     </li>
-                                ) : null;
+                                );
                             })}
                         </ul>
                     </div>
